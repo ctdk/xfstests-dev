@@ -886,6 +886,9 @@ _test_mkfs()
     bcachefs)
 	$MKFS_BCACHEFS_PROG $MKFS_OPTIONS $* $TEST_DEV > /dev/null
 	;;
+    briefs)
+	$MKFS_BRIEFS_PROG $MKFS_OPTIONS $* $TEST_DEV > /dev/null
+	;;
     *)
 	yes | $MKFS_PROG -t $FSTYP -- $MKFS_OPTIONS $* $TEST_DEV
 	;;
@@ -1038,6 +1041,10 @@ _scratch_mkfs()
 		mkfs_cmd="$MKFS_BCACHEFS_PROG"
 		mkfs_filter="cat"
 		;;
+    briefs)
+	mkfs_cmd="$MKFS_BRIEFS_PROG"
+	mkfs_filter="cat"
+	;;
 	*)
 		mkfs_cmd="yes | $MKFS_PROG -t $FSTYP --"
 		mkfs_filter="cat"
@@ -1393,6 +1400,12 @@ _try_scratch_mkfs_sized()
 		;;
 	bcachefs)
 		$MKFS_BCACHEFS_PROG $MKFS_OPTIONS --fs_size=$fssize $blocksize_opt "$@" $SCRATCH_DEV
+		;;
+	briefs)
+		# mkfs.briefs takes the size in blocks via -s; BrieFS uses a fixed
+		# 4 KiB block size, so ignore any requested $blocksize. $blocks is
+		# fssize/blocksize already computed above.
+		$MKFS_BRIEFS_PROG $MKFS_OPTIONS -s $blocks "$@" $SCRATCH_DEV
 		;;
 	*)
 		_notrun "Filesystem $FSTYP not supported in _scratch_mkfs_sized"
@@ -5813,7 +5826,7 @@ _require_od_endian_flag()
 # fs labels, and extended attribute names) as raw byte sequences.
 _require_names_are_bytes() {
         case "$FSTYP" in
-        ext2|ext3|ext4|f2fs|xfs|btrfs)
+        ext2|ext3|ext4|f2fs|xfs|btrfs|briefs)
 		# do nothing
 	        ;;
 	*)

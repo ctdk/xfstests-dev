@@ -554,6 +554,10 @@ _source_specific_fs()
 		[ "$UBIUPDATEVOL_PROG" = "" ] && _fatal "ubiupdatevol not found"
 		. ./common/ubifs
 		;;
+	briefs)
+		[ "$MKFS_PROG" = "" ] && _fatal "mkfs.briefs not found (set MKFS_PROG in the config)"
+		. ./common/briefs
+		;;
 	esac
 }
 

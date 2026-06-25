@@ -1,0 +1,41 @@
+## -*- shell-script -*-
+#
+# BrieFS-specific helpers for xfstests.
+#
+# BrieFS is an extents-only, trie-based Linux filesystem (kernel module
+# "briefs_fs", registered as fstyp "briefs"). mkfs.briefs and fsck.briefs live
+# in github.com/ctdk/briefs-utils (Go). This file is sourced by common/config
+# when FSTYP=briefs; the mkfs/check dispatch lives in common/rc (see the
+# "briefs)" cases in _scratch_mkfs and _test_mkfs), and the post-test
+# consistency check falls through to _check_generic_filesystem (which runs
+# `fsck -t briefs -n`).
+#
+# Feature notes that affect which generic tests skip vs. run:
+#   - xattrs (user/trusted/security): implemented (one external 4K block per
+#     inode, no POSIX ACLs). generic tests gate via _require_attrs, which
+#     probes setxattr; with sb->s_xattr set it succeeds and tests run.
+#   - POSIX ACLs, quotas, reflink/COW, fscrypt, fsverity: not implemented;
+#     generic tests gate these with _require_acl / _require_quota / etc., so
+#     they skip cleanly.
+#   - O_DIRECT / DIO: implemented (iomap era); _require_odirect passes.
+
+# Notrun helper for BrieFS features that are not yet implemented, so tests can
+# gate cleanly rather than failing. Usage: _require_briefs_feature <name>
+_require_briefs_feature()
+{
+	local feat=$1
+	case "$feat" in
+	acl)
+		_notrun "BrieFS does not support POSIX ACLs yet"
+		;;
+	reflink|cow)
+		_notrun "BrieFS does not support reflink/COW yet"
+		;;
+	quota)
+		_notrun "BrieFS does not support quotas yet"
+		;;
+	*)
+		_notrun "BrieFS does not support feature '$feat' yet"
+		;;
+	esac
+}
