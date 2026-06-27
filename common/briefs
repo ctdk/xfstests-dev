@@ -7,8 +7,8 @@
 # in github.com/ctdk/briefs-utils (Go). This file is sourced by common/config
 # when FSTYP=briefs; the mkfs/check dispatch lives in common/rc (see the
 # "briefs)" cases in _scratch_mkfs and _test_mkfs), and the post-test
-# consistency check falls through to _check_generic_filesystem (which runs
-# `fsck -t briefs -n`).
+# consistency check is _check_briefs_filesystem below (wired into the
+# _check_test_fs / _check_dev_fs dispatch in common/rc).
 #
 # Feature notes that affect which generic tests skip vs. run:
 #   - xattrs (user/trusted/security): implemented (one external 4K block per
@@ -38,4 +38,70 @@ _require_briefs_feature()
 		_notrun "BrieFS does not support feature '$feat' yet"
 		;;
 	esac
+}
+
+# Check a BrieFS filesystem on $1 for consistency (post-test).  Modelled on
+# _check_generic_filesystem, but BrieFS' fsck.briefs (github.com/ctdk/
+# briefs-utils, Go, urfave/cli) does not follow the classic `fsck -t <type>
+# -n` contract the generic path relies on: its check-only mode is the
+# *default* (`fsck.briefs <device>`), and while the current binary tolerates
+# `-t`/`-n` for wrapper compatibility, older builds rejected them and a
+# future build may again.  Invoke $FSCK_PROG directly (no `-t`, no `-n`) so
+# the check is independent of the host `fsck` wrapper's flag forwarding and
+# of whichever fsck.briefs $FSCK_PROG points at.  fsck.briefs exits non-zero
+# on detected corruption, matching what the generic path expects.
+_check_briefs_filesystem()
+{
+    local device=$1
+    local type=`_fs_type $device`
+    local ok=1
+
+    if [ "$type" = "$FSTYP" ]; then
+        # mounted -- run fsck on the raw device
+        local mountpoint=`_umount_or_remount_ro $device`
+    fi
+
+    $FSCK_PROG $device >$tmp.fsck 2>&1
+    if [ $? -ne 0 ]; then
+	_log_err "_check_briefs_filesystem: filesystem on $device is inconsistent"
+        echo "*** fsck.$FSTYP output ***"	>>$seqres.full
+        cat $tmp.fsck				>>$seqres.full
+        echo "*** end fsck.$FSTYP output"	>>$seqres.full
+        ok=0
+    fi
+    rm -f $tmp.fsck
+
+    if [ $ok -eq 0 ]; then
+        echo "*** mount output ***"		>>$seqres.full
+        _mount					>>$seqres.full
+        echo "*** end mount output"		>>$seqres.full
+    elif [ "$type" = "$FSTYP" ]; then
+        # was mounted -- put it back
+        _mount_or_remount_rw "$MOUNT_OPTIONS" $device $mountpoint
+        ok=$?
+    fi
+
+    if [ $ok -eq 0 ]; then
+        status=1
+        if [ "$iam" != "check" ]; then
+            _exit 1
+        fi
+        return 1
+    fi
+    return 0
+}
+
+# Repair a BrieFS filesystem on $1.  fsck.briefs repair mode is opt-in via
+# `-r` (repair) plus `-y` (assume-yes), not the `fsck -t <type> -y` shape the
+# generic _repair_*_fs default uses.  $FSCK_PROG is invoked directly.
+_repair_briefs_filesystem()
+{
+    local device=$1
+
+    $FSCK_PROG -r -y $device >$tmp.repair 2>&1
+    local res=$?
+    if [ $res -ne 0 ]; then
+        _dump_err2 "fsck.$FSTYP repair failed, err=$res"
+    fi
+    return $res
 }

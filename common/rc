@@ -1559,6 +1559,10 @@ _repair_scratch_fs()
 	# want the test to fail:
 	_check_scratch_fs
 	;;
+    briefs)
+	_repair_briefs_filesystem $SCRATCH_DEV
+	return $?
+	;;
     *)
 	local dev=$SCRATCH_DEV
 	local fstyp=$FSTYP
@@ -1615,6 +1619,10 @@ _repair_test_fs()
 								$tmp.repair 2>&1
 	yes | $BTRFS_UTIL_PROG check --repair --force "$TEST_DEV" >> \
 								$tmp.repair 2>&1
+		res=$?
+		;;
+	briefs)
+		_repair_briefs_filesystem $TEST_DEV
 		res=$?
 		;;
 	*)
@@ -3723,6 +3731,9 @@ _check_test_fs()
     f2fs)
         _check_f2fs_filesystem $TEST_DEV
         ;;
+    briefs)
+	_check_briefs_filesystem $TEST_DEV
+	;;
     *)
 	_check_generic_filesystem $TEST_DEV
 	;;
@@ -3782,6 +3793,9 @@ _check_dev_fs()
     f2fs)
         _check_f2fs_filesystem $device
         ;;
+    briefs)
+	_check_briefs_filesystem $device
+	;;
     *)
 	_check_generic_filesystem $device
 	;;
