@@ -934,6 +934,11 @@ _try_mkfs_dev()
     xfs)
 	$MKFS_PROG -t $FSTYP -- -f $MKFS_OPTIONS $*
 	;;
+    briefs)
+	# mkfs.briefs (Go/urfave/cli) does not understand the util-linux -t
+	# wrapper convention; invoke the dedicated program directly.
+	$MKFS_BRIEFS_PROG $MKFS_OPTIONS $*
+	;;
     *)
 	yes | $MKFS_PROG -t $FSTYP -- $MKFS_OPTIONS $*
 	;;
