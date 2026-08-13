@@ -887,7 +887,11 @@ _test_mkfs()
 	$MKFS_BCACHEFS_PROG $MKFS_OPTIONS $* $TEST_DEV > /dev/null
 	;;
     briefs)
-	$MKFS_BRIEFS_PROG $MKFS_OPTIONS $* $TEST_DEV > /dev/null
+	# BrieFS TEST_DEV is formatted once per ./check run, not between tests,
+	# and the full generic group can exhaust the default inode table.  Allow
+	# a separate TEST_MKFS_OPTIONS to use a higher inode ratio there without
+	# slowing down per-test scratch mkfs.
+	$MKFS_BRIEFS_PROG ${TEST_MKFS_OPTIONS:-$MKFS_OPTIONS} $* $TEST_DEV > /dev/null
 	;;
     *)
 	yes | $MKFS_PROG -t $FSTYP -- $MKFS_OPTIONS $* $TEST_DEV
@@ -1774,7 +1778,7 @@ _fs_type()
     #
     _df_device $1 | $AWK_PROG '{ print $2 }' | \
         sed -e 's/nfs4/nfs/' -e 's/fuse.glusterfs/glusterfs/' \
-            -e 's/fuse.ceph-fuse/ceph-fuse/'
+            -e 's/fuse.ceph-fuse/ceph-fuse/' -e 's/fuse.briefs/briefs/'
 }
 
 # return the FS mount options of a mounted device
@@ -3472,7 +3476,14 @@ _is_dev_mounted()
 		_exit 1
 	fi
 
-	findmnt -rncv -S $dev -t $fstype -o TARGET | head -1
+	local mp
+	mp=$(findmnt -rncv -S $dev -t $fstype -o TARGET 2>/dev/null | head -1)
+	# FUSE-backed filesystems (e.g. BrieFS's fuse.briefs) mount as
+	# "fuse.<fstyp>"; findmnt -t needs the exact type string, so when the
+	# bare type doesn't match retry with the "fuse." prefix.  No-op for
+	# non-FUSE filesystems, whose mount type already equals $fstype.
+	[ -n "$mp" ] || mp=$(findmnt -rncv -S $dev -t fuse.$fstype -o TARGET 2>/dev/null | head -1)
+	echo "$mp"
 }
 
 # check if the given dir is a mount point, if so, return mount point
@@ -3486,7 +3497,10 @@ _is_dir_mountpoint()
 		_exit 1
 	fi
 
-	findmnt -rncv -t $fstype -o TARGET $dir | head -1
+	local mp
+	mp=$(findmnt -rncv -t $fstype -o TARGET $dir 2>/dev/null | head -1)
+	[ -n "$mp" ] || mp=$(findmnt -rncv -t fuse.$fstype -o TARGET $dir 2>/dev/null | head -1)
+	echo "$mp"
 }
 
 # remount a FS to a new mode (ro or rw)
