@@ -49,6 +49,15 @@ _acl_get_max()
 	bcachefs)
 		echo 251
 		;;
+	briefs)
+		# BrieFS stores ACLs as ordinary xattrs in the per-inode xattr
+		# block chain; the on-disk value_len is le16 and briefs_xattr_set
+		# rejects values > XATTR_SIZE_MAX (65536) with -E2BIG.  The ACL
+		# uapi format is a 4-byte header + 8 bytes/entry, so the largest
+		# storable count is (65536 - 4) / 8 = 8191; 8192 entries (65540
+		# bytes) exceeds XATTR_SIZE_MAX and is rejected.
+		echo 8191
+		;;
 	*)
 		echo 0
 		;;
