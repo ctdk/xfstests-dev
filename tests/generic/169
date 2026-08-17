@@ -24,6 +24,9 @@ _show_wrote_and_stat_only()
 
 _require_scratch
 
+# minix does not support FS_IOC_GETXATTR, which xfs_io stat uses
+[ "$FSTYP" = "minix" ] && _notrun "minix does not support FS_IOC_GETXATTR"
+
 _scratch_mkfs >>$seqres.full 2>&1 \
 	|| _fail "mkfs scratch failed"
 

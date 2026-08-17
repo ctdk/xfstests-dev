@@ -20,6 +20,7 @@ _exclude_fs ext4
 _exclude_fs jfs
 _exclude_fs ocfs2
 _exclude_fs udf
+_exclude_fs minix
 
 _require_scratch_nocheck
 _require_no_large_scratch_dev

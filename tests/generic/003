@@ -20,6 +20,9 @@ _require_scratch
 _require_atime
 _require_relatime
 
+# minix has broken atime/ctime semantics after remount
+[ "$FSTYP" = "minix" ] && _notrun "minix atime/ctime semantics are broken"
+
 if [ "$FSTYP" = "exfat" ]; then
 	# exfat's timestamp for access_time has double seconds granularity
 	access_delay=2.1

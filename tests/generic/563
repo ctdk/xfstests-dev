@@ -37,6 +37,8 @@ _require_loop
 
 # cgroup v2 writeback is only support on block devices so far
 _require_block_device $SCRATCH_DEV
+# minix does not support cgroup2 writeback accounting
+[ "$FSTYP" = "minix" ] && _notrun "minix does not support cgroup2 writeback accounting"
 
 # this test creates a loop device on the scratch block device, which is not
 # supported on zoned devices

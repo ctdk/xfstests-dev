@@ -27,6 +27,9 @@ _cleanup()
 _require_test
 _require_test_program "t_readdir_3"
 
+# minix has short filename limits (14/30 chars) and limited directory sizes
+[ "$FSTYP" = "minix" ] && _notrun "minix filename length limits too restrictive for this test"
+
 files=4000
 seed=$RANDOM
 

@@ -102,6 +102,8 @@ _process_args()
 }
 
 _require_test
+# minix does not support fallocate/copy_file_range needed by fsx
+[ "$FSTYP" = "minix" ] && _notrun "minix does not support fallocate/copy_file_range"
 
 size10=`expr 10 \* 1024 \* 1024`	# 10 megabytes
 filelen=$size10

@@ -27,6 +27,8 @@ do_truncate()
 }
 
 _require_test
+# V1 minix has a small max file size, causing ftruncate to fail
+[ "$FSTYP" = "minix" ] && [ "$MKFS_OPTIONS" = "-1" ] && _notrun "minix V1 max file size too small for this test"
 
 # set max file size to 1G (in block number of 1k blocks), so it should be big
 # enough to let test run without bringing any trouble to test harness

@@ -29,6 +29,7 @@ _require_scsi_debug
 # written on scsi_debug device
 _require_test
 _require_block_device $TEST_DEV
+_require_odirect
 
 size=$(_small_fs_size_mb 256)
 echo "Get a device with 4096 physical sector size and 512 logical sector size"

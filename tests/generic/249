@@ -22,6 +22,9 @@ _cleanup()
 
 _require_test
 
+# minix does not support sendfile/splice
+[ "$FSTYP" = "minix" ] && _notrun "minix does not support sendfile"
+
 echo "Feel the serenity."
 
 SRC=$TEST_DIR/$seq.src

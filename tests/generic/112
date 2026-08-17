@@ -99,6 +99,8 @@ _process_args()
 
 _require_test
 _require_aio
+# minix does not support fallocate/copy_file_range needed by fsx
+[ "$FSTYP" = "minix" ] && _notrun "minix does not support fallocate/copy_file_range"
 
 [ -x $here/ltp/aio-stress ] || \
 	_notrun "fsx not built with AIO for this platform"

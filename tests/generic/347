@@ -51,6 +51,8 @@ _workout()
 
 _require_scratch_nocheck
 _require_dm_target thin-pool
+# minix dm-thin test hangs in cleanup
+[ "$FSTYP" = "minix" ] && _notrun "minix does not support dm-thin cleanup properly"
 
 _setup_thin
 _workout
