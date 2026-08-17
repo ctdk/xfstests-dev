@@ -219,6 +219,21 @@ _scratch_ext4_logstate()
     echo $?
 }
 
+# BrieFS journal state is recorded in the superblock (block 0): the journal is
+# clean (no replay needed) iff journal_log_start == journal_log_end.  In the
+# on-disk briefs_superblock those two __le64 fields sit at byte offsets 264
+# and 272.  Comparing the raw 8 bytes avoids any endianness handling; equal
+# => clean (echo 0), differ => dirty (echo 1), matching the other _scratch_*
+# _logstate helpers (0 = clean, 1 = dirty).
+_scratch_briefs_logstate()
+{
+    local s e
+    s=$(dd if=$SCRATCH_DEV bs=1 skip=264 count=8 2>/dev/null | od -An -tx1 | tr -d ' \n')
+    e=$(dd if=$SCRATCH_DEV bs=1 skip=272 count=8 2>/dev/null | od -An -tx1 | tr -d ' \n')
+    [ "$s" = "$e" ]
+    echo $?
+}
+
 _scratch_dump_log()
 {
 	case "$FSTYP" in
@@ -264,6 +279,9 @@ _print_logstate()
         ;;
     ext4)
         dirty=$(_scratch_ext4_logstate)
+        ;;
+    briefs)
+        dirty=$(_scratch_briefs_logstate)
         ;;
     *)
         ;;
@@ -535,6 +553,10 @@ _require_logstate()
 	if [ -z "$DUMPE2FS_PROG" ]; then
 		_notrun "This test requires dumpe2fs utility."
 	fi
+	;;
+    briefs)
+	# _scratch_briefs_logstate reads the on-disk superblock directly; no
+	# external utility is required.
 	;;
     *)
         _notrun "$FSTYP does not support log state probing."

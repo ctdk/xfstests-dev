@@ -170,7 +170,8 @@ _filter_xfs_io()
 {
     # Apart from standard numeric values, we also filter out 'inf', 'nan', and
     # '-nan' which can result from division in some cases
-    sed -e "s/[0-9/.]* [GMKiBbytes]*, [0-9]* ops\; [0-9/:. sec]* ([infa0-9/.-]* [EPGMKiBbytes]*\/sec and [infa0-9/.-]* ops\/sec)/XXX Bytes, X ops\; XX:XX:XX.X (XXX YYY\/sec and XXX ops\/sec)/"
+    sed -e "s/[0-9/.]* [GMKiBbytes]*, [0-9]* ops\; [0-9/:. sec]* ([infa0-9/.-]* [EPGMKiBbytes]*\/sec and [infa0-9/.-]* ops\/sec)/XXX Bytes, X ops\; XX:XX:XX.X (XXX YYY\/sec and XXX ops\/sec)/" \
+	-e 's/(foreign,/(xfs,/'
 }
 
 # Also filter out the offset part of xfs_io output

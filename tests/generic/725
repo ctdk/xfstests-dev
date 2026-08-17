@@ -45,7 +45,7 @@ $XFS_IO_PROG \
 	-c 'bmap -elpv' \
 	-c 'commitupdate -h -k' \
 	-c 'bmap -elpv' \
-	$SCRATCH_MNT/a >> $seqres.full
+	$SCRATCH_MNT/a >> $seqres.full 2>&1
 _scratch_cycle_mount
 
 md5sum $SCRATCH_MNT/a | _filter_scratch
