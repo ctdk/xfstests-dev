@@ -162,6 +162,10 @@ _require_acls()
 {
     [ -n "$CHACL_PROG" ] || _notrun "chacl command not found"
 
+    # minix does not support ACLs — the VFS may accept chacl but the
+    # operations are not actually implemented by the filesystem.
+    [ "$FSTYP" = "minix" ] && _notrun "ACLs not supported by this filesystem type: $FSTYP"
+
     #
     # Test if chacl is able to set an ACL on a file.  On really old kernels
     # the system calls might not be implemented at all, but the more common
@@ -198,6 +202,10 @@ _require_attrs()
 	else
 	  	args="$*"
 	fi
+
+	# minix does not support xattrs — the VFS may accept setfattr but the
+	# operations are not actually implemented by the filesystem.
+	[ "$FSTYP" = "minix" ] && _notrun "attrs not supported by this filesystem type: $FSTYP"
 
 	[ -n "$ATTR_PROG" ] || _notrun "attr command not found"
 	[ -n "$GETFATTR_PROG" ] || _notrun "getfattr command not found"

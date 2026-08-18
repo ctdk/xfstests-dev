@@ -3350,6 +3350,10 @@ _require_fs_space()
 _require_sparse_files()
 {
     local testfile="$TEST_DIR/$$.sparsefiletest"
+
+    # minix does not support sparse files
+    [ "$FSTYP" = "minix" ] && _notrun "Sparse files are not supported by $FSTYP"
+
     rm -f "$testfile"
 
     # The write size and offset are specifically chosen to trick the Windows
@@ -4808,6 +4812,10 @@ _require_test_fcntl_setlease()
 _require_test_fcntl_setdeleg()
 {
 	_require_test_program "locktest"
+
+	# minix does not support fcntl file delegations
+	[ "$FSTYP" = "minix" ] && _notrun "fcntl setdeleg not supported by $FSTYP"
+
 	mkdir $TEST_DIR/setdeleg_testdir
 	$here/src/locktest -t -D $TEST_DIR/setdeleg_testdir >/dev/null 2>&1
 	local ret=$?
@@ -5766,6 +5774,9 @@ _require_filefrag_options()
 
 _require_fibmap()
 {
+	# minix does not support FIBMAP
+	[ "$FSTYP" = "minix" ] && _notrun "FIBMAP not supported by $FSTYP"
+
 	_require_filefrag_options "B"
 
 	local file="$TEST_DIR/fibmap_testfile"
