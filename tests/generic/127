@@ -25,6 +25,9 @@ _cleanup()
 # Import common functions.
 . ./common/filter
 
+# minix does not support copy_file_range, which fsx exercises
+[ "$FSTYP" = "minix" ] && _notrun "minix does not support copy_file_range needed by fsx"
+
 FSX_FILE_SIZE=262144
 FSX_ARGS="-q -l $FSX_FILE_SIZE -o 65536 -S 191110531 -N 100000"
 

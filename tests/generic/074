@@ -23,6 +23,9 @@ _cleanup()
 
 _require_test
 
+# V1 minix has a 64MB max filesystem, too small for this test
+[ "$FSTYP" = "minix" ] && [ "$MKFS_OPTIONS" = "-1" ] && _notrun "minix V1 filesystem too small for this test"
+
 _do_test()
 {
     _n="$1"

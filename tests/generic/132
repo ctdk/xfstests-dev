@@ -16,6 +16,9 @@ _begin_fstest pattern auto
 
 _require_scratch
 
+# V1 minix has a 64MB max filesystem, causing ENOSPC during write ops
+[ "$FSTYP" = "minix" ] && [ "$MKFS_OPTIONS" = "-1" ] && _notrun "minix V1 filesystem too small for this test"
+
 _scratch_mkfs >/dev/null 2>&1
 _scratch_mount
 

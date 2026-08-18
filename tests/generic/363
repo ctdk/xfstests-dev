@@ -13,6 +13,9 @@ _begin_fstest rw auto
 
 _require_test
 
+# minix does not support copy_file_range, which fsx exercises
+[ "$FSTYP" = "minix" ] && _notrun "minix does not support copy_file_range needed by fsx"
+
 _fixed_by_fs_commit btrfs da2dccd7451d \
 	"btrfs: fix hole expansion when writing at an offset beyond EOF"
 _fixed_by_fs_commit btrfs 8e4f21f2b13d \

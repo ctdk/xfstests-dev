@@ -13,6 +13,9 @@ _begin_fstest auto
 
 _require_scratch
 
+# V1 minix has a 250 directory link limit
+[ "$FSTYP" = "minix" ] && [ "$MKFS_OPTIONS" = "-1" ] && _notrun "minix V1 directory link limit too small for this test"
+
 _fixed_by_fs_commit udf f950fd052913 \
 	"udf: Protect rename against modification of moved directory"
 [[ "$FSTYP" =~ ext[0-9]+ ]] && _fixed_by_kernel_commit 0813299c586b \

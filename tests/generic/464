@@ -13,6 +13,9 @@ _begin_fstest auto rw
 # Import common functions.
 . ./common/filter
 
+# V1 minix has a 64MB max filesystem, too small for this stress test
+[ "$FSTYP" = "minix" ] && [ "$MKFS_OPTIONS" = "-1" ] && _notrun "minix V1 filesystem too small for this test"
+
 MAXFILES=200
 BLOCK_SZ=65536
 

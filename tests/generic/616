@@ -18,6 +18,9 @@ _begin_fstest auto rw io_uring stress soak
 _require_test
 _require_io_uring
 
+# minix does not support copy_file_range, which fsx exercises
+[ "$FSTYP" = "minix" ] && _notrun "minix does not support copy_file_range needed by fsx"
+
 # Run fsx for 100 thousand ops or more
 nr_ops=$((100000 * TIME_FACTOR))
 op_sz=$((128000 * LOAD_FACTOR))
