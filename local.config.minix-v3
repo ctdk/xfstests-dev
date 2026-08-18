@@ -1,0 +1,11 @@
+# Minix xfstests config
+export FSTYP=minix
+export TEST_DIR=/mnt/minix-test
+export SCRATCH_MNT=/mnt/minix-scratch
+export TEST_DEV=/dev/vdb1
+export SCRATCH_DEV=/dev/vdb2
+export MKFS_PROG=/usr/sbin/mkfs
+export FSCK_PROG=/usr/sbin/fsck.minix
+export MKFS_OPTIONS="-3"
+export MOUNT_OPTIONS=""
+export FSCK_OPTIONS=""

@@ -1,0 +1,11 @@
+# xiafs xfstests config
+export FSTYP=xiafs
+export TEST_DIR=/mnt/xiafs-test
+export SCRATCH_MNT=/mnt/xiafs-scratch
+export TEST_DEV=/dev/vdb1
+export SCRATCH_DEV=/dev/vdb2
+export MKFS_PROG=/usr/sbin/mkfs
+export FSCK_PROG=/sbin/fsck.xiafs
+export MKFS_OPTIONS=""
+export MOUNT_OPTIONS=""
+export FSCK_OPTIONS=""
