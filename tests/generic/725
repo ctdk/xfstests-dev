@@ -29,6 +29,8 @@ _scratch_mkfs >> $seqres.full
 _scratch_mount
 _require_congruent_file_oplen $SCRATCH_MNT 65536
 
+# V1 minix has a 64MB max filesystem, too small for this test
+[ "$FSTYP" = "minix" ] && [ "$MKFS_OPTIONS" = "-1" ] && _notrun "V1 minix 64MB filesystem fills up during fiexchange test"
 # Create original file
 _pwrite_byte 0x58 0 1m $SCRATCH_MNT/a >> $seqres.full
 _scratch_sync

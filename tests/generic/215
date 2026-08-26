@@ -23,6 +23,8 @@ _cleanup()
 
 _require_test
 
+# V1 minix has a 64MB max filesystem, too small for this test
+[ "$FSTYP" = "minix" ] && [ "$MKFS_OPTIONS" = "-1" ] && _notrun "V1 minix filesystem too small, ENOSPC during test file creation"
 testfile=$TEST_DIR/tst.mmap
 
 echo

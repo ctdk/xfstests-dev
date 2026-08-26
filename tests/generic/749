@@ -25,6 +25,8 @@ _require_test
 _require_xfs_io_command "truncate"
 _require_xfs_io_command "falloc"
 
+# V1 minix has a 64MB max filesystem, too small for this test
+[ "$FSTYP" = "minix" ] && [ "$MKFS_OPTIONS" = "-1" ] && _notrun "V1 minix does not support fallocate"
 # _fixed_by_git_commit kernel <pending-upstream> \
 #        "filemap: cap PTE range to be created to allowed zero fill in folio_map_range()"
 

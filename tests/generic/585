@@ -17,6 +17,8 @@ _begin_fstest auto rename
 _require_scratch
 _require_renameat2 whiteout
 
+# V1 minix has a 64MB max filesystem, too small for this test
+[ "$FSTYP" = "minix" ] && [ "$MKFS_OPTIONS" = "-1" ] && _notrun "V1 minix 64MB filesystem fills up during rename test"
 _scratch_mkfs > $seqres.full 2>&1 || _fail "mkfs failed"
 _scratch_mount >> $seqres.full 2>&1
 

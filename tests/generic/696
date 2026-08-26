@@ -24,6 +24,8 @@ _fixed_by_kernel_commit ac6800e279a2 \
 	"fs: Add missing umask strip in vfs_tmpfile" \
 1639a49ccdce "fs: move S_ISGID stripping into the vfs_*() helpers"
 
+# V1 minix has a 64MB max filesystem, too small for this test
+[ "$FSTYP" = "minix" ] && [ "$MKFS_OPTIONS" = "-1" ] && _notrun "V1 minix 64MB filesystem fills up during vfstest setup"
 _scratch_mkfs >$seqres.full 2>&1
 
 $here/src/vfs/vfstest --test-setgid-create-umask \

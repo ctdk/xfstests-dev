@@ -14,6 +14,8 @@ _begin_fstest auto
 _require_scratch
 _require_symlinks
 
+# V1 minix has a 64MB max filesystem, too small for this test
+[ "$FSTYP" = "minix" ] && [ "$MKFS_OPTIONS" = "-1" ] && _notrun "V1 minix 64MB filesystem fills up during auto test"
 if [ $FSTYP = "xfs" ]; then
 	_fixed_by_git_commit kernel 38de567906d95 \
 			"xfs: allow symlinks with short remote targets"

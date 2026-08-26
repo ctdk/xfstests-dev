@@ -17,6 +17,8 @@ _require_test
 _require_seek_data_hole
 _require_test_program "seek_sanity_test"
 
+# V1 minix has a 64MB max filesystem, too small for this test
+[ "$FSTYP" = "minix" ] && [ "$MKFS_OPTIONS" = "-1" ] && _notrun "V1 minix seek sanity check fails due to filesystem limitations"
 test_file=$TEST_DIR/seek_sanity_testfile.$seq
 
 _cleanup()

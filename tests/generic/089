@@ -29,6 +29,8 @@ addentries()
 _require_test
 _require_hardlinks
 
+# V1 minix has a 64MB max filesystem, too small for this test
+[ "$FSTYP" = "minix" ] && [ "$MKFS_OPTIONS" = "-1" ] && _notrun "V1 minix filesystem too small, test output truncated by ENOSPC"
 [ "X$TEST_DIR" = "X" ] && exit 1
 cd $TEST_DIR
 rm -fr test

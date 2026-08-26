@@ -23,6 +23,8 @@ _require_test_program punch-alternating
 _require_xfs_io_command exchangerange
 _require_test
 
+# V1 minix has a 64MB max filesystem, too small for this test
+[ "$FSTYP" = "minix" ] && [ "$MKFS_OPTIONS" = "-1" ] && _notrun "V1 minix 64MB filesystem fills up during fiexchange test"
 dir=$TEST_DIR/test-$seq
 mkdir -p $dir
 

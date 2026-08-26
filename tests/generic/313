@@ -24,6 +24,8 @@ _cleanup()
 
 _require_test
 
+# V1 minix has a 64MB max filesystem, too small for this test
+[ "$FSTYP" = "minix" ] && [ "$MKFS_OPTIONS" = "-1" ] && _notrun "V1 minix 64MB filesystem fills up during write test"
 testfile=$TEST_DIR/testfile.$seq
 
 echo "Silence is golden"

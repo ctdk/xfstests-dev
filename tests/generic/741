@@ -33,6 +33,8 @@ _require_test
 _require_scratch
 _require_dm_target flakey
 
+# V1 minix has a 64MB max filesystem, too small for this test
+[ "$FSTYP" = "minix" ] && [ "$MKFS_OPTIONS" = "-1" ] && _notrun "V1 minix 64MB filesystem fills up during volume tempfsid test"
 _fixed_by_fs_commit btrfs 2f1aeab9fca1 \
 			"btrfs: return accurate error code on open failure"
 

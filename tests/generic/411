@@ -29,6 +29,8 @@ _require_test
 _require_scratch
 _require_local_device $SCRATCH_DEV
 
+# V1 minix has a 64MB max filesystem, too small for this test
+[ "$FSTYP" = "minix" ] && [ "$MKFS_OPTIONS" = "-1" ] && _notrun "V1 minix 64MB filesystem fills up, mount point creation fails"
 fs_stress()
 {
 	local target=$1

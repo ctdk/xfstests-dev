@@ -21,6 +21,8 @@ _cleanup()
  
 _require_test
 
+# V1 minix has a 64MB max filesystem, too small for this test
+[ "$FSTYP" = "minix" ] && [ "$MKFS_OPTIONS" = "-1" ] && _notrun "V1 minix filesystem too small, populate_root setup fails from ENOSPC"
 # Use _populate_fs() in common/rc to create a directory structure.
 TEMP_DIR=/tmp
 [ "$FSTYP" == "xfs" ] && TEMP_DIR=$TEST_DIR

@@ -13,6 +13,8 @@ _begin_fstest auto quick dir
 
 _require_test
 
+# V1 minix has a 64MB max filesystem, too small for this test
+[ "$FSTYP" = "minix" ] && [ "$MKFS_OPTIONS" = "-1" ] && _notrun "V1 minix 64MB filesystem fills up during directory operations test"
 testdir=$TEST_DIR/test-$seq
 rm -rf $testdir
 mkdir $testdir

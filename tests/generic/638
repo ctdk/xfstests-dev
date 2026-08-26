@@ -28,6 +28,8 @@ _begin_fstest auto quick rw mmap
 _require_test
 _require_test_program "t_mmap_writev_overlap"
 
+# V1 minix has a 64MB max filesystem, too small for this test
+[ "$FSTYP" = "minix" ] && [ "$MKFS_OPTIONS" = "-1" ] && _notrun "V1 minix 64MB filesystem fills up during write test"
 pagesize=`getconf PAGE_SIZE`
 testfile=$TEST_DIR/mmap-writev-overlap
 $XFS_IO_PROG -f -c "truncate 0" $testfile

@@ -62,6 +62,8 @@ blksz=65536
 nrblks=57
 _require_congruent_file_oplen $TEST_DIR $blksz
 
+# V1 minix has a 64MB max filesystem, too small for this test
+[ "$FSTYP" = "minix" ] && [ "$MKFS_OPTIONS" = "-1" ] && _notrun "V1 minix 64MB filesystem fills up during fiexchange test"
 # Set up some simple files for a first test.
 rm -rf $dir/a $dir/b
 _pwrite_byte 0x58 0 $((blksz * nrblks)) $dir/a >> $seqres.full

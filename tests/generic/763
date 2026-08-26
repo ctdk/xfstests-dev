@@ -22,6 +22,8 @@ _fixed_by_fs_commit exfat dda0407a2026 \
 # Modify as appropriate.
 _require_test
 
+# V1 minix has a 64MB max filesystem, too small for this test
+[ "$FSTYP" = "minix" ] && [ "$MKFS_OPTIONS" = "-1" ] && _notrun "V1 minix 64MB filesystem fills up during write test"
 $XFS_IO_PROG -f -c "pwrite 0 0" $TEST_DIR/testfile.$seq 2>&1 | _filter_xfs_io
 
 # success, all done

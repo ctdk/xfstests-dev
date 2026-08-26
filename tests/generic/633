@@ -15,6 +15,8 @@ _begin_fstest auto quick atime attr cap idmapped io_uring mount perms rw unlink
 _require_test
 _require_chown
 
+# V1 minix has a 64MB max filesystem, too small for this test
+[ "$FSTYP" = "minix" ] && [ "$MKFS_OPTIONS" = "-1" ] && _notrun "V1 minix 64MB filesystem fills up during vfstest setup"
 echo "Silence is golden"
 
 $here/src/vfs/vfstest --test-core --device "$TEST_DEV" \

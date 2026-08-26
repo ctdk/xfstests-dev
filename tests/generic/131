@@ -16,6 +16,8 @@ _begin_fstest perms auto quick
 _require_test
 _require_test_fcntl_advisory_locks
 
+# V1 minix has a 64MB max filesystem, too small for this test
+[ "$FSTYP" = "minix" ] && [ "$MKFS_OPTIONS" = "-1" ] && _notrun "V1 minix filesystem too small for network test setup"
 _run_locktest
 
 exit

@@ -31,6 +31,8 @@ _exclude_fs tmpfs
 _require_test
 _require_scratch
 
+# V1 minix has a 64MB max filesystem, too small for this test
+[ "$FSTYP" = "minix" ] && [ "$MKFS_OPTIONS" = "-1" ] && _notrun "V1 minix 64MB filesystem fills up, mount point creation fails"
 echo "Silence is golden"
 
 _scratch_mkfs >> $seqres.full

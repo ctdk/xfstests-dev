@@ -23,6 +23,8 @@ _cleanup()
 # Modify as appropriate.
 _require_test
 
+# V1 minix has a 64MB max filesystem, too small for this test
+[ "$FSTYP" = "minix" ] && [ "$MKFS_OPTIONS" = "-1" ] && _notrun "V1 minix 64MB filesystem fills up during mmap write test"
 TESTFILE=$TEST_DIR/test_file
 TEST_PROG=$here/src/pwrite_mmap_blocked
 

@@ -23,6 +23,8 @@ _cleanup()
 _require_xfs_io_command exchangerange ' -s 64k -l 64k'
 _require_test
 
+# V1 minix has a 64MB max filesystem, too small for this test
+[ "$FSTYP" = "minix" ] && [ "$MKFS_OPTIONS" = "-1" ] && _notrun "V1 minix 64MB filesystem fills up during fiexchange test"
 filesnap() {
 	echo "$1"
 	if [ "$2" != "$3" ]; then

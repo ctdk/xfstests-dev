@@ -16,6 +16,8 @@ _require_xfs_io_command "copy_range"
 _require_test
 _require_mknod
 
+# V1 minix has a 64MB max filesystem, too small for this test
+[ "$FSTYP" = "minix" ] && [ "$MKFS_OPTIONS" = "-1" ] && _notrun "V1 minix 64MB filesystem fills up during copy_range test"
 testdir=$TEST_DIR/test-$seq
 rm -rf $testdir
 mkdir $testdir

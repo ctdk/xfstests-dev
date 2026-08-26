@@ -28,6 +28,8 @@ _require_scratch
 _scratch_mkfs >/dev/null 2>&1
 _scratch_mount
 
+# V1 minix has a 64MB max filesystem, too small for this test
+[ "$FSTYP" = "minix" ] && [ "$MKFS_OPTIONS" = "-1" ] && _notrun "V1 minix read/write pattern test fails due to filesystem limitations"
 # Run preallo_rw_pattern on both test and scratch partitions
 for TESTFILE in $TEST_DIR/rw_pattern.tmp $SCRATCH_MNT/rw_pattern.tmp
   do

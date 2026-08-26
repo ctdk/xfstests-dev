@@ -31,6 +31,8 @@ _cleanup()
 _require_test
 _require_chown
 
+# V1 minix has a 64MB max filesystem, too small for this test
+[ "$FSTYP" = "minix" ] && [ "$MKFS_OPTIONS" = "-1" ] && _notrun "V1 minix 64MB filesystem fills up during permissions test"
 QA_FS_PERMS=$here/src/fs_perms
 
 cd $TEST_DIR

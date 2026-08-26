@@ -40,6 +40,8 @@ exercise_cpu_hotplug()
 
 _require_test
 
+# V1 minix has a 64MB max filesystem, too small for this test
+[ "$FSTYP" = "minix" ] && [ "$MKFS_OPTIONS" = "-1" ] && _notrun "V1 minix 64MB filesystem fills up during stress soak test"
 sysfs_cpu_dir="/sys/devices/system/cpu"
 
 # Figure out which CPU(s) support hotplug.
